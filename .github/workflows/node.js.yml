@@ -30,5 +30,6 @@ jobs:
       - name: Run tests
         env:
           MONGO_URI: ${ { secrets.MONGO_URI } }
-        run: echo ${{ secrets.MONGO_URI}}
-        run: yarn run test
+        run: |
+          echo ${{ secrets.MONGO_URI}} 
+          yarn run test
