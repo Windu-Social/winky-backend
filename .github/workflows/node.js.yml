@@ -27,12 +27,11 @@ jobs:
           cache: 'yarn'
       - run: rm -rf node_modules && yarn install --frozen-lockfile
       - name: Setup MongoDB Atlas
-      - env:
+        env:
           MONGODB_ATLAS_USERNAME: ${{ secrets.MONGODB_ATLAS_USERNAME }}
           MONGODB_ATLAS_PASSWORD: ${{ secrets.MONGODB_ATLAS_PASSWORD }}
           MONGODB_ATLAS_CONNECTION_STRING: ${{ secrets.MONGODB_ATLAS_CONNECTION_STRING }}
-      - name: Setup MongoDB Atlas
-        uses: |
+        run: |
           echo "Setting up MongoDB Atlas..."
           curl -o mongo.tgz https://fastdl.mongodb.org/tools/db/mongodb-database-tools-100.5.0-linux-x86_64.tar.gz
           tar -zxvf mongo.tgz
