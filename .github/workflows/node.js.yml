@@ -33,8 +33,8 @@ jobs:
           MONGODB_ATLAS_CONNECTION_STRING: ${{ secrets.MONGODB_ATLAS_CONNECTION_STRING }}
         run: |
           echo "Setting up MongoDB Atlas..."
-          curl -o mongo.tar https://fastdl.mongodb.org/tools/db/mongodb-database-tools-100.5.0-linux-x86_64.tar
-          tar -xvf mongo.tar
+          wget https://fastdl.mongodb.org/tools/db/mongodb-database-tools-100.5.0-linux-x86_64.zip
+          unzip mongodb-database-tools-100.5.0-linux-x86_64.zip
           export PATH=$PATH:`pwd`/mongodb-database-tools-100.5.0/bin
           mongo $MONGODB_ATLAS_CONNECTION_STRING --username $MONGODB_ATLAS_USERNAME --password $MONGODB_ATLAS_PASSWORD --eval "db.stats()"
       - run: yarn run build
