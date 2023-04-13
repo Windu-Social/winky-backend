@@ -31,7 +31,8 @@ jobs:
           MONGODB_ATLAS_USERNAME: ${{ secrets.MONGODB_ATLAS_USERNAME }}
           MONGODB_ATLAS_PASSWORD: ${{ secrets.MONGODB_ATLAS_PASSWORD }}
           MONGODB_ATLAS_CONNECTION_STRING: ${{ secrets.MONGODB_ATLAS_CONNECTION_STRING }}
-      - run: |
+      - name: Setup MongoDB Atlas
+        uses: |
           echo "Setting up MongoDB Atlas..."
           curl -o mongo.tgz https://fastdl.mongodb.org/tools/db/mongodb-database-tools-100.5.0-linux-x86_64.tar.gz
           tar -zxvf mongo.tgz
