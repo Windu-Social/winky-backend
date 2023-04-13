@@ -34,8 +34,10 @@ jobs:
         run: |
           echo "Setting up MongoDB Atlas..."
           curl -o mongo.tgz https://fastdl.mongodb.org/tools/db/mongodb-database-tools-amazon2-x86_64-100.7.0.tgz
+          echo "Installing MongoDB Atlas..."
           tar -zxvf mongo.tgz
           export PATH=$PATH:`pwd`/mongodb-database-tools-amazon2-x86_64-100.7.0/bin
+          echo "Connecting MongoDB Atlas..."
           mongo $MONGODB_ATLAS_CONNECTION_STRING --username $MONGODB_ATLAS_USERNAME --password $MONGODB_ATLAS_PASSWORD --eval "db.stats()"
       - run: yarn run build
       - run: yarn run test
