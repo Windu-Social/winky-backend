@@ -16,6 +16,8 @@ import {
   hashUtils,
 } from '../utils/hash.utils';
 
+import { getVideoToken } from 'src/utils/index.utils';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,25 +30,25 @@ export class AuthService {
     HttpStatus.INTERNAL_SERVER_ERROR,
   )
   async login({ username, password }: LoginDto): Promise<LoginResponse> {
-    const existUser = await this.authModel
+    const user = await this.authModel
       .findOne({
         username,
       })
       .exec();
-    if (!existUser) {
+    if (!user) {
       throw new HttpException(AuthError.USER_NOT_FOUND, HttpStatus.BAD_REQUEST);
     }
 
-    const isMatch = await compareHashUtils(password, existUser.password);
+    const isMatch = await compareHashUtils(password, user.password);
 
     if (!isMatch) {
       throw new HttpException(AuthError.WRONG_PASSWORD, HttpStatus.BAD_REQUEST);
     }
 
     const token = await this.jwtService.signAsync({
-      existUser,
+      user,
     });
-    return { user: existUser, token };
+    return { user, token };
   }
 
   @InjectHTTPExceptions(
@@ -84,9 +86,18 @@ export class AuthService {
 
     const createdUser = await newUser.save();
 
-    const token = await this.jwtService.signAsync({ existUser: createdUser });
+    const token = await this.jwtService.signAsync({ user: createdUser });
 
     return { user: createdUser, token };
+  }
+
+  @InjectHTTPExceptions(
+    AuthError.INTERNAL_SERVER_ERROR,
+    HttpStatus.INTERNAL_SERVER_ERROR,
+  )
+  async getRoomToken(username: string, room: string): Promise<string> {
+    const token = getVideoToken(room, username);
+    return token.toJwt();
   }
 
   /**

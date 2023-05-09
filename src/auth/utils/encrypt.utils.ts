@@ -3,7 +3,7 @@ import { promisify } from 'util';
 
 import * as cryptoConfigs from 'src/config/crypto.config.json';
 
-export const encryptPasswordUtils = async (password: string) => {
+export const encryptMessageUtils = async (password: string) => {
   const { PASSWORD_ENCRYPT } = cryptoConfigs;
 
   const iv = randomBytes(16);
@@ -18,7 +18,7 @@ export const encryptPasswordUtils = async (password: string) => {
   return passwordEncrypt.toString('hex');
 };
 
-export const descryptPasswordUtils = async (
+export const descryptMessageUtils = async (
   encryptedPassword: NodeJS.ArrayBufferView,
 ) => {
   const { PASSWORD_ENCRYPT } = cryptoConfigs;

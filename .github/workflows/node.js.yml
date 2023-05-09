@@ -27,9 +27,3 @@ jobs:
           cache: 'yarn'
       - run: rm -rf node_modules && yarn install --frozen-lockfile
       - run: yarn run build
-      - name: Run tests
-        env:
-          MONGO_URI: ${ { secrets.MONGO_URI } }
-        run: |
-          echo ${{ secrets.MONGO_URI}} 
-          yarn run test

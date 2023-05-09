@@ -7,7 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('NestJS Swagger')
+    .addBearerAuth()
+    .setTitle('Winku Backend Swagger')
     .setVersion('1.0')
     .build();
 
@@ -15,6 +16,10 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN,
+  });
 
   await app.listen(3001);
 }
