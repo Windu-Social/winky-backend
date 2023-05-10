@@ -80,9 +80,12 @@ export class MessagesService {
   // }
 
   async findAll(paticipants: string[]) {
-    const historyMessage = await this.messageModel.find({
-      paticipants: { $in: [...paticipants] },
-    });
+    const historyMessage = await this.messageModel
+      .find({
+        paticipants: { $in: [...paticipants] },
+      })
+      .lean()
+      .exec();
 
     const messageHistory: Message[] = [];
 

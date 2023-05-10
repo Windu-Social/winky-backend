@@ -25,17 +25,23 @@ export class MessagesGateway {
     const receiverSocketId = this.messagesService.findUserSocketId(receiverId);
     const senderSocketId = this.messagesService.findUserSocketId(senderId);
 
+    const message = await this.messagesService.create(createMessageDto);
+
     if (!receiverSocketId) {
+      // this.server.to(senderSocketId).emit('message', {
+      //   ...createMessageDto,
+      //   text: messagesErrors.USER_NOT_ONLINE,
+      //   sentTime: new Date(),
+      //   isSuccess: false,
+      // });
+
       this.server.to(senderSocketId).emit('message', {
-        ...createMessageDto,
-        text: messagesErrors.USER_NOT_ONLINE,
-        sentTime: new Date(),
-        isSuccess: false,
+        ...message,
+        sentTime: message.createdAt,
+        isSuccess: true,
       });
       return;
     }
-
-    const message = await this.messagesService.create(createMessageDto);
 
     this.server
       .to(senderSocketId)
@@ -54,10 +60,13 @@ export class MessagesGateway {
 
     const messages = await this.messagesService.findAll([senderId, receiverId]);
 
-    const formattedMessageResponses = messages.map((message) => ({
-      ...message,
-      isSuccess: true,
-    }));
+    const formattedMessageResponses = messages.map((message) => {
+      return {
+        ...message,
+        sentTime: message.createdAt,
+        isSuccess: true,
+      };
+    });
 
     this.server.to(senderSocketId).emit('message', formattedMessageResponses);
     this.server.to(receiverSocketId).emit('message', formattedMessageResponses);
@@ -80,7 +89,10 @@ export class MessagesGateway {
   }
 
   @SubscribeMessage('join')
-  join(@MessageBody('uid') userId: string, @ConnectedSocket() client: Socket) {
+  async join(
+    @MessageBody('uid') userId: string,
+    @ConnectedSocket() client: Socket,
+  ) {
     return this.messagesService.identify(userId, client.id);
   }
 
