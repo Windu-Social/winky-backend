@@ -27,13 +27,6 @@ export class MessagesGateway {
     const message = await this.messagesService.create(createMessageDto);
 
     if (!receiverSocketId) {
-      // this.server.to(senderSocketId).emit('message', {
-      //   ...createMessageDto,
-      //   text: messagesErrors.USER_NOT_ONLINE,
-      //   sentTime: new Date(),
-      //   isSuccess: false,
-      // });
-
       this.server.to(senderSocketId).emit('message', {
         ...message,
         sentTime: message.createdAt,
@@ -48,7 +41,6 @@ export class MessagesGateway {
     this.server
       .to(receiverSocketId)
       .emit('message', { ...message, sentTime: new Date(), isSuccess: true });
-    return message;
   }
 
   @SubscribeMessage('findAllMessages')
@@ -80,6 +72,11 @@ export class MessagesGateway {
   @SubscribeMessage('updateMessage')
   update(@MessageBody() updateMessageDto: UpdateMessageDto) {
     return this.messagesService.update(updateMessageDto.id, updateMessageDto);
+  }
+
+  @SubscribeMessage('markAsRead')
+  markAsRead(@MessageBody() readerId: string) {
+    return this.messagesService.markAsRead(readerId);
   }
 
   @SubscribeMessage('removeMessage')

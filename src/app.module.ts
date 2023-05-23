@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MessagesModule } from './messages/messages.module';
 import { UserModule } from './user/user.module';
+import { PostModule } from './post/post.module';
 
 const env: string | undefined = process.env.NODE_ENV;
 
@@ -21,6 +22,7 @@ const env: string | undefined = process.env.NODE_ENV;
     AuthModule,
     MessagesModule,
     UserModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

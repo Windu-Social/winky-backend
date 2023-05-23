@@ -18,7 +18,6 @@ import {
 } from '@nestjs/swagger';
 import { CreateUserDto } from '../dto/createUser.dto';
 import { Request } from 'express';
-import { GetUserProfileDto } from '../dto/getUser.dto';
 
 @ApiBearerAuth()
 @Controller('profile')
@@ -57,8 +56,12 @@ export class UserController {
   @ApiOperation({ summary: 'Get profile of friends' })
   @UseGuards(UserAuthGuard)
   @Get('friends')
-  async getFriendsProfile(@Query('fullname') fullname: string | undefined) {
-    return await this.userServices.findAllByName(fullname);
+  async getFriendsProfile(
+    @Req() request: any,
+    @Query('fullname') fullname: string | undefined,
+  ) {
+    const userId = request.user._id;
+    return await this.userServices.findAllByName(userId, fullname);
   }
 
   @ApiQuery({

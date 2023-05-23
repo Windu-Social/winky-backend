@@ -5,7 +5,7 @@ export class CreateUserDto {
   @ApiProperty({ type: String, required: true })
   @IsString()
   @IsNotEmpty()
-  readonly fullname: string;
+  fullname?: string;
 
   @ApiProperty({
     type: String,
@@ -13,5 +13,5 @@ export class CreateUserDto {
     required: false,
   })
   @IsString({ each: true })
-  friendsId: string[];
+  friendsId?: string[];
 }

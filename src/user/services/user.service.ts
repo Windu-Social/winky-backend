@@ -83,13 +83,17 @@ export class UserService {
     userErrors.INTERNAL_SERVER_ERROR,
     HttpStatus.INTERNAL_SERVER_ERROR,
   )
-  async findAllByName(fullname: string | undefined) {
-    const users: UserDocument[] = await this.userModel
-      .find(
-        fullname && {
-          fullname: { $regex: fullname },
-        },
-      )
+  async findAllByName(userId: string, fullname: string | undefined) {
+    const conditions: any = [];
+    if (fullname) {
+      conditions.push({ fullname: { $regex: fullname } });
+    } else {
+      conditions.push({ friendsId: { $in: [userId] } });
+    }
+
+    const users: User[] = await this.userModel
+      .find({ $and: conditions })
+      .lean()
       .exec();
     return users;
   }

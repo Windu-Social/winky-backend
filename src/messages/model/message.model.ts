@@ -20,6 +20,9 @@ export class Message {
   @Prop({ type: [String], required: true })
   paticipants: string[];
 
+  @Prop({ type: Boolean, default: false })
+  isRead: boolean;
+
   @Prop({ default: now() })
   createdAt: Date;
 

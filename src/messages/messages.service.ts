@@ -17,6 +17,7 @@ export class MessagesService {
 
   identify(userId: string, clientId: string) {
     this._clientToUser.set(userId, clientId);
+    // eslint-disable-next-line no-console
     console.log(
       '🚀 ~ file: messages.service.ts:10 ~ MessagesService ~ _clientToUser:',
       this._clientToUser,
@@ -46,12 +47,13 @@ export class MessagesService {
 
     const processedMessage = await newMessage.save();
 
-    const formattedMessage = {
+    const formattedMessage: Message = {
       paticipants: processedMessage.paticipants,
       text: processedMessage.text,
       receiverId: processedMessage.receiverId,
       senderId: processedMessage.senderId,
       room: '',
+      isRead: processedMessage.isRead,
       createdAt: processedMessage.createdAt,
       updatedAt: processedMessage.updatedAt,
     };
@@ -61,28 +63,15 @@ export class MessagesService {
     return { ...formattedMessage };
   }
 
-  // getRoomId(senderId: string, receiverId: string) {
-  //   const roomId = this._rooms.find((room) => {
-  //     const existedRoom =
-  //       (room[0] === senderId || room[0] === receiverId) &&
-  //       (room[1] === senderId || room[1] === receiverId);
-  //     if (existedRoom) {
-  //       return room[0];
-  //     }
-  //     return null;
-  //   });
-  //   if (roomId) return roomId[0];
-  //   return null;
-  // }
-
-  // generateRoomId(senderId: string, receiverId: string) {
-  //   return [senderId, receiverId].sort().join('-');
-  // }
-
   async findAll(paticipants: string[]) {
+    console.log(
+      '🚀 ~ file: messages.service.ts:67 ~ MessagesService ~ findAll ~ paticipants:',
+      paticipants,
+    );
+
     const historyMessage = await this.messageModel
       .find({
-        paticipants: { $in: [...paticipants] },
+        paticipants: { $all: [...paticipants] },
       })
       .lean()
       .exec();
@@ -108,6 +97,17 @@ export class MessagesService {
 
   update(id: number, updateMessageDto: UpdateMessageDto) {
     return `This action updates a #${id} message`;
+  }
+
+  async markAsRead(readerId: string) {
+    return this.messageModel.updateMany(
+      {
+        receiverId: readerId,
+      },
+      {
+        isRead: true,
+      },
+    );
   }
 
   remove(id: number) {
